@@ -1,6 +1,7 @@
 package com.pavan.microservices.employee.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,17 +15,21 @@ import com.pavan.microservices.employee.service.EmployeeService;
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
-	
+
 	@Autowired
 	private EmployeeService employeeService;
-	
+
 	@PostMapping
 	public Employee saveEmployee(@RequestBody Employee employee) {
 		return employeeService.saveEmployee(employee);
 	}
-	
+
 	@GetMapping("/{id}")
-	public Employee getEmployeeById(@PathVariable Long id) {
-		return employeeService.getEmployeeById(id);
+	public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
+		Employee employee = employeeService.getEmployeeById(id);
+		if (employee == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(employee);
 	}
 }
